@@ -1,5 +1,6 @@
 import os
 import random
+import time
 import sys
 import pygame as pg
 
@@ -28,6 +29,29 @@ def check_bound(obj_rct : pg.Rect) -> tuple[bool, bool]:
         tate = False
     return yoko, tate
 
+def GameOver(screen):
+    #GameOver用
+    shadow_s = pg.Surface((WIDTH,HEIGHT))
+    pg.draw.rect(shadow_s,(0,0,0), (0,0,WIDTH,HEIGHT))
+    shadow_s.set_alpha(125)
+    fonto = pg.font.Font(None, 80)
+    txt = fonto.render("GameOver", True, (255, 255, 255))
+    kk8_img = pg.transform.rotozoom(pg.image.load("fig/8.png"), 0, 5.0)
+    screen.blit(shadow_s, [0, 0])
+    screen.blit(kk8_img, [WIDTH/2-100, HEIGHT/2-400])
+    screen.blit(txt, [400,300])
+    pg.display.update()
+
+def bb_speed():
+    global bb_imgs, bb_accs
+    bb_imgs = []
+    bb_accs = [a for a in range(1,11)]
+    for r in range(1,11):
+        bb_img = pg.Surface((20*r, 20*r))
+        pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
+        bb_img.set_colorkey((0, 0, 0))
+        bb_imgs.append(bb_img)
+
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
@@ -42,6 +66,8 @@ def main():
     bb_rct = bb_img.get_rect() # 爆弾Rectの抽出
     bb_rct.center = random.randint(0, WIDTH), random.randint(0, HEIGHT)
     vx, vy = +5, +5 #爆弾の速度
+    bb_speed()
+    
 
     clock = pg.time.Clock()
     tmr = 0
@@ -53,6 +79,8 @@ def main():
         if kk_rct.colliderect(bb_rct): 
             #こうかとんと爆弾が重なっていたら
             print("GameOver")
+            GameOver(screen)
+            time.sleep(5)
             return
 
         key_lst = pg.key.get_pressed()
@@ -73,13 +101,14 @@ def main():
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
         screen.blit(kk_img, kk_rct)
-
+        avx = vx * bb_accs[min(tmr//500, 9)]
         bb_rct.move_ip(vx,vy)
         yoko, tate = check_bound(bb_rct)
         if not yoko:
             vx *= -1
         if not tate:
             vy *= -1
+        bb_img = bb_imgs[min(tmr//500,9)]
         screen.blit(bb_img, bb_rct)
         pg.display.update()
         tmr += 1
