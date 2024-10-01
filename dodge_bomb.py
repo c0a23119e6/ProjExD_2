@@ -29,8 +29,7 @@ def check_bound(obj_rct : pg.Rect) -> tuple[bool, bool]:
         tate = False
     return yoko, tate
 
-def GameOver(screen):
-    #GameOver用
+def GameOver(screen):# GameOver画面（完成）
     shadow_s = pg.Surface((WIDTH,HEIGHT))
     pg.draw.rect(shadow_s,(0,0,0), (0,0,WIDTH,HEIGHT))
     shadow_s.set_alpha(125)
