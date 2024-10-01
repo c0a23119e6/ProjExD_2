@@ -51,6 +51,8 @@ def bb_speed():
         bb_img.set_colorkey((0, 0, 0))
         bb_imgs.append(bb_img)
 
+    return bb_imgs
+
 
 def main():
     pg.display.set_caption("逃げろ！こうかとん")
